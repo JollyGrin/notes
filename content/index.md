@@ -1,6 +1,13 @@
 ---
-title: Welcome to Quartz
+title: Welcome
+tags:
+  - intro
 ---
-[[nested]]
-This is a blank Quartz installation.
-See the [documentation](https://quartz.jzhao.xyz) for how to get started.
+Howdy, Dean here.
+Twitter: https://x.com/deandotland 
+
+This will be a dump of useful notes/text for myself that I can easily reference and share.
+
+
+note to self for troubleshooting: 
+check [documentation](https://quartz.jzhao.xyz) for issues
