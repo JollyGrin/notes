@@ -1,3 +1,7 @@
+---
+tags:
+  - config
+---
 ```lua
 -- vim options
 vim.opt.shiftwidth = 2
