@@ -3,4 +3,5 @@ LunarVim is my editor of choice. It's easy to install on all systems and can por
 https://www.lunarvim.org/
 
 > [!info]  Using Mac?
-Use wezTerm to render nerdfont icons nicely
+> 
+> Use wezTerm to render nerdfont icons nicely
