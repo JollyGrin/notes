@@ -27,6 +27,7 @@ lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
 
 lvim.builtin.treesitter.auto_install = true
+lvim.builtin.treesitter.autotag.enable = true
 
 local formatters = require "lvim.lsp.null-ls.formatters"
 formatters.setup {
@@ -37,11 +38,30 @@ formatters.setup {
   },
 }
 
-lvim.keys.normal_mode["<leader>xx"] = {
-  "<cmd>TroubleToggle<cr>",
-  silent = true,
-  noremap = true,
+
+local code_actions = require "lvim.lsp.null-ls.code_actions"
+code_actions.setup {
+  {
+    name = "proselint",
+  },
 }
+
+
+
+-- lvim.keys.normal_mode["<leader>xx"] = {
+--   "<cmd>Trouble diagnostics toggle<cr>",
+--   silent = true,
+--   noremap = true,
+-- }
+-- lvim.builtin.which_key.mappings["<leader>xx"] = {
+--   name = "Diagnostics",
+--   t = { "<cmd>TroubleToggle<cr>", "trouble" },
+--   w = { "<cmd>TroubleToggle workspace_diagnostics<cr>", "workspace" },
+--   d = { "<cmd>TroubleToggle document_diagnostics<cr>", "document" },
+--   q = { "<cmd>TroubleToggle quickfix<cr>", "quickfix" },
+--   l = { "<cmd>TroubleToggle loclist<cr>", "loclist" },
+--   r = { "<cmd>TroubleToggle lsp_references<cr>", "references" },
+-- }
 
 lvim.keys.normal_mode["<leader>xw"] = {
   "[[:let @+ = substitute(expand('%'), getcwd() . '/', '', '')<CR>]]",
@@ -57,15 +77,15 @@ end
 
 
 lvim.plugins = {
-  {
-    'wfxr/minimap.vim',
-    build = "cargo install --locked code-minimap",
-    config = function()
-      vim.cmd("let g:minimap_width = 10")
-      vim.cmd("let g:minimap_auto_start = 1")
-      vim.cmd("let g:minimap_auto_start_win_enter = 1")
-    end,
-  },
+  -- {
+  --   'wfxr/minimap.vim',
+  --   build = "cargo install --locked code-minimap",
+  --   config = function()
+  --     vim.cmd("let g:minimap_width = 10")
+  --     vim.cmd("let g:minimap_auto_start = 1")
+  --     vim.cmd("let g:minimap_auto_start_win_enter = 1")
+  --   end,
+  -- },
   {
     "folke/persistence.nvim",
     event = "BufReadPre", -- this will only start session saving when an actual file was opened
@@ -101,8 +121,46 @@ lvim.plugins = {
   },
   {
     "folke/trouble.nvim",
-    cmd = "TroubleToggle",
+    opts = {}, -- for default options, refer to the configuration section for custom setup.
+    cmd = "Trouble",
+    keys = {
+      {
+        "<leader>xx",
+        "<cmd>Trouble diagnostics toggle<cr>",
+        desc = "Diagnostics (Trouble)",
+      },
+      {
+        "<leader>xX",
+        "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+        desc = "Buffer Diagnostics (Trouble)",
+      },
+      {
+        "<leader>cs",
+        "<cmd>Trouble symbols toggle focus=false<cr>",
+        desc = "Symbols (Trouble)",
+      },
+      {
+        "<leader>cl",
+        "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+        desc = "LSP Definitions / references / ... (Trouble)",
+      },
+      {
+        "<leader>xL",
+        "<cmd>Trouble loclist toggle<cr>",
+        desc = "Location List (Trouble)",
+      },
+      {
+        "<leader>xQ",
+        "<cmd>Trouble qflist toggle<cr>",
+        desc = "Quickfix List (Trouble)",
+      },
+    },
   },
+  -- { 'ibhagwan/fzf-lua' },
+  -- {
+  --   "folke/trouble.nvim",
+  --   cmd = "TroubleToggle",
+  -- },
   {
     "norcalli/nvim-colorizer.lua",
     config = function()
@@ -119,5 +177,23 @@ lvim.plugins = {
     end,
   },
 }
+
+
+-- local capabilities = vim.tbl_deep_extend(
+--   -- "error": raise an error
+--   -- "keep": use value from the leftmost map
+--   -- "force": use value from the rightmost map
+--   "force",
+--   {}, -- Empty capabilities
+--   vim.lsp.protocol.make_client_capabilities(), -- Minimal capabilities
+--   require("cmp_nvim_lsp").default_capabilities() -- Default capabilities
+-- )
+
+local lspconfig = require 'lspconfig'
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
+lspconfig.tsserver.setup({
+  capabilities = capabilities
+})
+
 
 ```
