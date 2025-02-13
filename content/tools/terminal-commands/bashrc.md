@@ -14,18 +14,47 @@ alias rc='vi ~/.zshrc'
 alias oops='source ~/.zshrc'
 alias vi="lvim"
 alias p="pnpm"
+alias pip="python3.11 -m pip"
 export PATH="$PATH:$HOME/.local/bin"
+
+alias ghosttyConfig='vi ~/.config/ghostty/config'
+
+
+# SSH SERVERS
+alias connectHetzner="ssh root@116.203.40.137"
+
+alias dc="docker compose"
+
+alias gogo="go run main.go"
 
 alias airdrop='cd ~/git/innkeeper/innkeeper-airdrop/ && pnpm start'
 
 alias arweave='arkb --auto-confirm --wallet ~/git/innkeeper/decrypted.json deploy'
 
-alias cardsarmy='cd ~/git/sorcerytcg/playtest/ && vi .'
+alias cvdean='cd ~/git/deanlol/deanlol/ && vi .'
+alias spellsbar='cd ~/git/sorcerytcg/playtest/ && vi .'
 alias runepunk='cd ~/git/spacemangg/lots/ && vi .'
 alias monacum='cd ~/git/manocum/ && vi .'
 alias teamplay='cd ~/git/spacemangg/teamplay-demo-frontend/ && vi .'
 
 alias syncNotes='cd ~/git/quartz/ && npx quartz sync'
+
+
+alias timelapse='ffmpeg -f avfoundation -framerate 2 -i "1" -vf "fps=2" "/Users/dean/Desktop/timelapse_$(date +%Y%m%d_%H%M%S).mp4"'
+
+alias urlGrok='ngrok http --url=snapper-sound-kit.ngrok-free.app'
+
+
+speedramp() {
+  # Speed ramps a video and saves the output with a timestamped filename
+  input=$1
+  timestamp=$(date +%Y%m%d%H%M%S)
+  output="output_${timestamp}.mp4"
+
+  ffmpeg -i "$input" -filter:v "setpts=0.0333*PTS" -an "$output"
+  
+  echo "Output saved as $output"
+}
 
 cropmp3() {
   # crops an audio file
@@ -43,6 +72,31 @@ cropVideo() {
  ffmpeg -i $1 -ss "00:00:00.000" -to "00:00:$2.000" -codec:v libx264 -crf 23 -pix_fmt yuv420p -codec:a aac -f mp4 -movflags faststart $3
   # ffmpeg -i $1 -ss 00:00:00 -to 00:00:$2 -c copy -copyts $3
   # ffmpeg -ss 00:00:00 -t 00:00:$2 -i $1 -c:v copy -c:a copy $3
+}
+
+videoToWebp() {
+    if [ -z "$1" ]; then
+        echo "Usage: videoToWebp <input_video> [output_name]"
+        return 1
+    fi
+
+    input="$1"
+    # If no output name provided, use input name with .webp extension
+    output="${2:-${input%.*}.webp}"
+
+    ffmpeg -i "$input" \
+        -vf "fps=15,scale=800:-1:flags=lanczos" \
+        -vcodec libwebp \
+        -lossless 0 \
+        -compression_level 6 \
+        -q:v 70 \
+        -loop 0 \
+        -preset picture \
+        -an \
+        -vsync 0 \
+        "$output"
+
+    echo "Converted $input to $output"
 }
 
 compressVideo() {
@@ -135,7 +189,7 @@ function daily {
             echo "- $ENTRY_TEXT" >> "$NOTE_PATH"
         fi
     else
-        nvim "$NOTE_PATH"
+        vi "$NOTE_PATH"
     fi
 }
 
@@ -184,5 +238,14 @@ export NVM_DIR="$HOME/.nvm"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+
+# android sdk
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+
+# Added by Windsurf
+export PATH="/Users/dean/.codeium/windsurf/bin:$PATH"
 
 ```

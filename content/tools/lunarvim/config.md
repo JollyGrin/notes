@@ -10,6 +10,23 @@ vim.opt.relativenumber = true
 
 vim.api.nvim_set_keymap("n", "<Leader>ai", "<cmd>lua vim.lsp.buf.code_action()<CR>", { noremap = true, silent = true })
 
+vim.api.nvim_set_keymap("n", "<Leader>sf", ":noautocmd write<CR>", { noremap = true, silent = true })
+
+
+
+
+lvim.builtin.which_key.mappings["t"] = {
+  name = "Tools",                                             -- This is the name of the submenu (visible when you press `<leader>t`)
+  t = { ":call codeium#Chat()<CR>", "Trigger Codeium Chat" }, -- Adds <leader>tt
+}
+
+-- vim.api.nvim_set_keymap("n", "<leader>t", ":call codeium#Chat()<CR>", { noremap = true, silent = true })
+
+
+-- lvim.builtin.which_key.mappings.t = {
+--   ":call codeium#Chat()<CR>", "Trigger Codeium Chat"
+-- }
+
 lvim.log.level = "info"
 lvim.format_on_save = {
   enabled = true,
@@ -25,9 +42,17 @@ lvim.builtin.alpha.mode = "dashboard"
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
+lvim.builtin.nvimtree.setup.filters = {
+  custom = { ".DS_Store", "*.log", "__pycache__" }, -- Exclude common unwanted files
+  exclude = { ".env", "important_folder" }          -- Specify files or directories to always show
+}
 
 lvim.builtin.treesitter.auto_install = true
 lvim.builtin.treesitter.autotag.enable = true
+
+
+-- Map the function to a keybinding, e.g., <leader>s
+lvim.keys.normal_mode["<leader>su"] = ":%s/"
 
 local formatters = require "lvim.lsp.null-ls.formatters"
 formatters.setup {
@@ -86,6 +111,25 @@ lvim.plugins = {
   --     vim.cmd("let g:minimap_auto_start_win_enter = 1")
   --   end,
   -- },
+  -- {
+  --   "supermaven-inc/supermaven-nvim",
+  --   config = function()
+  --     require("supermaven-nvim").setup({
+  --       keymaps = {
+  --         -- accept_suggestion = "<C-n>", -- Change this to your preferred key
+  --         -- clear_suggestion = "<C-]>",   -- You might want to change this as well if it conflicts
+  --         -- accept_word = "<C-j>",        -- This is the default for accepting a word at a time
+  --       }
+  --     })
+  --   end,
+  -- },
+  {
+    "Exafunction/codeium.vim",
+    event = "BufEnter",
+    config = function()
+      -- Add any Codeium-specific configuration here if needed
+    end,
+  },
   {
     "folke/persistence.nvim",
     event = "BufReadPre", -- this will only start session saving when an actual file was opened
@@ -189,10 +233,22 @@ lvim.plugins = {
 --   require("cmp_nvim_lsp").default_capabilities() -- Default capabilities
 -- )
 
+
+
 local lspconfig = require 'lspconfig'
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 lspconfig.tsserver.setup({
   capabilities = capabilities
+})
+-- Setup for svelte
+lspconfig.svelte.setup({
+  -- This will automatically handle TypeScript inside <script lang="ts">
+  filetypes = { "svelte" }, -- Only attach for .svelte files
+  on_attach = function(client)
+    -- Disable unnecessary features if desired
+    -- client.server_capabilities.document_formatting = false
+    -- client.stop()
+  end,
 })
 
 
