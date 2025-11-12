@@ -1,0 +1,5 @@
+---
+title: typescript
+tags:
+  - intro
+---
